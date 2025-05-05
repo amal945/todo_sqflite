@@ -117,7 +117,7 @@ class AuthService {
     }
   }
 
-  Future<void> register(
+   Future<void> register(
     BuildContext context,
     String username,
     String email,

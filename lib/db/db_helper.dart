@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:test_project/model/todo_model.dart';
 import 'package:test_project/user_model.dart';
 
 class DatabaseHelper {
@@ -14,29 +15,44 @@ class DatabaseHelper {
   }
 
   Future<Database> initDatabase() async {
-    return await openDatabase("todo.db", version: 1, onCreate: _onCreate);
+    String path = join(await getDatabasesPath(), "todo.db");
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    return await db.execute(
-      "CREATE TABLE todo ("
+    await db.execute(
+      "CREATE TABLE users ("
       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
       "userName TEXT,"
       "email TEXT,"
       "password TEXT"
       ")",
     );
+
+    await db.execute('''
+      CREATE TABLE todos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        title TEXT,
+        description TEXT,
+        isCompleted INTEGER DEFAULT 0,
+        createdAt TEXT,
+        updatedAt TEXT NULL,
+        completedAt TEXT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id)
+      )
+    ''');
   }
 
   Future<int> registerUser(User user) async {
     final db = await database;
-    return await db.insert("todo", user.toMap());
+    return await db.insert("users", user.toMap());
   }
 
   Future<User?> login(String email, String password) async {
     final db = await database;
     final List<Map<String, dynamic>> user = await db.query(
-      "todo",
+      "users",
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
@@ -51,7 +67,7 @@ class DatabaseHelper {
   Future<bool> checkUserExists(String email) async {
     final db = await database;
     final List<Map<String, dynamic>> user = await db.query(
-      "todo",
+      "users",
       where: 'email = ?',
       whereArgs: [email],
     );
@@ -62,8 +78,36 @@ class DatabaseHelper {
     return false;
   }
 
+  Future<int> createTodo(Todo data) async {
+    final db = await database;
+    return await db.insert("todos", data.toMap());
+  }
 
+  Future<List<Todo>?> fetchAllTodos({required int userId}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> todos = await db.query(
+      "todos",
+      where: 'userId = ?',
+      whereArgs: [userId],
+    );
+    final data = todos.map((e) => Todo.fromMap(e)).toList();
+    return data;
+  }
 
+  Future<bool> updateTodo(Todo data) async {
+    final db = await database;
+    final rowsAffected = await db.update(
+      "todos",
+      data.toMap(),
+      where: 'id = ?',
+      whereArgs: [data.id],
+    );
 
+    return rowsAffected > 0;
+  }
 
+  Future<int> deleteTodo(int id) async {
+    final db = await database;
+    return await db.delete("todos", where: 'id = ?', whereArgs: [id]);
+  }
 }
