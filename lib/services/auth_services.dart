@@ -4,7 +4,7 @@ import 'package:test_project/db/db_helper.dart';
 import 'package:test_project/utils/utls.dart';
 import 'package:test_project/view/home/home.dart';
 
-import '../user_model.dart';
+import '../model/user_model.dart';
 import '../view/login/login.dart';
 
 class AuthService {
@@ -127,7 +127,9 @@ class AuthService {
     if (validateUsername(context, username) &&
         validateEmail(context, email) &&
         validatePasswordRegister(context, password, confirmPassword)) {
+
       DatabaseHelper databaseHelper = DatabaseHelper();
+
       User user = User(userName: username, email: email, password: password);
 
       await databaseHelper.checkUserExists(email).then((value) {

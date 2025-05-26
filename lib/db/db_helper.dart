@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:test_project/model/todo_model.dart';
-import 'package:test_project/user_model.dart';
+import 'package:test_project/model/user_model.dart';
 
 class DatabaseHelper {
   static Database? _db;
