@@ -18,7 +18,7 @@ class TodoService {
         return;
       }
       String createdAt = DateTime.now().toIso8601String();
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
       final todo = Todo(
         userId: userId,
         title: title,
@@ -44,7 +44,7 @@ class TodoService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final userId = prefs.getInt("id");
 
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
 
       final response = await databaseHelper.fetchAllTodos(userId: userId!);
 
@@ -64,7 +64,7 @@ class TodoService {
     required Todo data,
   }) async {
     try {
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
       final updatedTodo = Todo(
         id: data.id,
         userId: data.userId,
@@ -90,7 +90,7 @@ class TodoService {
   }) async {
     try {
       String updatedAt = DateTime.now().toIso8601String();
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
       final updatedTodo = Todo(
         id: data.id,
         userId: data.userId,
@@ -113,7 +113,7 @@ class TodoService {
     required int todoId,
   }) async {
     try {
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
 
       final response = await databaseHelper.deleteTodo(todoId);
 

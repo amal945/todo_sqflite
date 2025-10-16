@@ -97,7 +97,7 @@ class AuthService {
     String password,
   ) async {
     if (validateEmail(context, email) && validatePassword(context, password)) {
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
 
       final response = await databaseHelper.login(email, password);
 
@@ -117,7 +117,7 @@ class AuthService {
     }
   }
 
-   Future<void> register(
+  Future<void> register(
     BuildContext context,
     String username,
     String email,
@@ -127,8 +127,7 @@ class AuthService {
     if (validateUsername(context, username) &&
         validateEmail(context, email) &&
         validatePasswordRegister(context, password, confirmPassword)) {
-
-      DatabaseHelper databaseHelper = DatabaseHelper();
+      DatabaseHelper databaseHelper = DatabaseHelper.instance;
 
       User user = User(userName: username, email: email, password: password);
 
@@ -149,7 +148,7 @@ class AuthService {
     }
   }
 
- static Future<void> logout(BuildContext context) async {
+  static Future<void> logout(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.remove("id");
     Navigator.pushAndRemoveUntil(

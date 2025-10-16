@@ -4,6 +4,10 @@ import 'package:test_project/model/todo_model.dart';
 import 'package:test_project/model/user_model.dart';
 
 class DatabaseHelper {
+  DatabaseHelper._internal();
+
+  static final DatabaseHelper instance = DatabaseHelper._internal();
+
   static Database? _db;
 
   Future<Database> get database async {
